@@ -1,22 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
- <h1>News Feed</h1>
+<div class="container w-50">
+  <h1 class="text-primary">News Feed</h1>
+  <hr>
+  
   {% for post in posts %}
-    <div class='container border border-primary rounded p-3 my-3 bg-secondary-subtle'>
+    <div class='post_container rounded my-3 bg-light'>
+      <div class="user_detail p-3">
         {% if post.author.userprofile and post.author.userprofile.profile_picture %}
-            <img src="{{ post.author.userprofile.profile_picture.url }}" alt="{{ post.author.username }}'s Profile Picture">
+          <img src="{{ post.author.userprofile.profile_picture.url }}" alt="{{ post.author.username }}'s Profile Picture">
         {% else %}
-            <img src="{% media 'default_profile_picture.jpg' %}" alt="{{ post.author.username }}'s Profile Picture">
-        {% endif %}      
-      <p><b>{{ post.user.username }}</b></p>
-      <small>{{ post.created_at }}</small>
-      <p style="white-space: pre-line; margin-top: 10px">{{ post.content }}</p>
+          <div class="profile_picture">A</div>
+        {% endif %}  
+        <div class="mx-3">   
+          <p class="m-0"><b>{{ post.user.username }}</b></p>
+          <small>{{ post.created_at }}</small>
+        </div> 
+      </div>
+
+      <p style="white-space: pre-line; margin-top: 10px" class="p-3">{{ post.content }}</p>
       {% if post.image %}
-                <img src="{{ post.image.url }}" alt="{{ post.title }} Image should have been here but it is not so just read the text.">
+        <img src="{{ post.image.url }}" alt="{{ post.title }} Image should have been here but it is not so just read the text." class="post_images">
       {% endif %}
+
+      <div class="p-3">
+        <p><i class="fa-regular fa-thumbs-up"></i> <b>34</b> people liked this post</p>
+        <hr>
+        <div class="like_row">
+          <span><i class="fas fa-thumbs-up"></i> Like</span> <span><i class="fa-solid fa-comment"></i> Comment</span> <span><i class="fa-solid fa-share"></i> Share</span>
+        </div>
+        <hr>
+      </div>
+
     </div>
   {% endfor %}
 
 {% endblock %}
+</div>

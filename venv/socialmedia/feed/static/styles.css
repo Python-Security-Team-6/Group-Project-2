@@ -1,0 +1,29 @@
+body{
+    background-color: #F0F2F5;
+}
+.post_container{
+    border: 1px solid #FDFDFD;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.post_images{
+    width: 100%;
+}
+.profile_picture{
+    width: 80px;
+    height: 80px;
+    border: 1px solid #FDFDFD;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(210, 210, 247);
+}
+.user_detail{
+    display: flex;
+    align-items: center;
+}
+.like_row{
+    display: flex;
+    justify-content: space-around;
+    font-weight: bold;
+}
