@@ -31,9 +31,9 @@ def share_post(request, post_id):
     return redirect('post_detail', post_id=post_id)
 
 @login_required
-def some_view(request):
+def testingposts(request):
     posts = Post.objects.all()
-    return redirect('testing_posts')
+    return render(request, 'posts/testingposts.html')
 
 @login_required
 def post_detail(request, post_id):
