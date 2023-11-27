@@ -1,0 +1,59 @@
+{% extends 'base.html' %} 
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center my-5">
+	<div class="border shadow w-50 p-3 d-flex flex-column justify-content-center align-items-center rounded bg-light">
+		<h2>Edit Post</h2>
+		<form method="post" enctype="multipart/form-data" class="my-4 w-75">
+			{% csrf_token %}
+			<div class="mb-3">
+				<textarea
+					class="form-control my-3"
+					name="content"
+					rows="5"
+					placeholder="Edit your post, {{ user.username }}?"
+				>{{ form.content.value }}</textarea>
+
+				<!-- Hidden File Input -->
+				<input
+					type="file"
+					id="id_image"
+					name="image"
+					style="display: none"
+					onchange="displayFileName(this)"
+				/>
+
+				<!-- Custom Icon/Button for File Upload -->
+				<label for="id_image" class="custom-file-upload border">
+					<i class="fa-regular fa-image display-6"></i>
+					<span id="upload-text">Select a new photo</span>
+				</label>
+
+				<!-- Display selected file name -->
+				<span id="file-name"></span>
+			</div>
+
+			<script>
+				// Set the initial content value
+				var existingContent = `{{ existing_content }}`;
+				document.getElementById("id_content").value = existingContent;
+
+				function displayFileName(input) {
+					var fileName = input.value.split("\\").pop();
+					document.getElementById("file-name").innerText =
+						"Selected Image: " + fileName;
+					document.getElementById("upload-text").innerText = "Change photo";
+				}
+			</script>
+
+			<button
+				type="submit"
+				class="btn btn-secondary mt-3"
+				onclick="history.back()"
+			>
+				Cancel
+			</button>
+			<button type="submit" class="btn btn-success mt-3">Save Changes</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

@@ -32,12 +32,17 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'posts',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'follow_unfollow',
+    'follow_unfollow','register_login_logout.apps.RegisterLoginLogoutConfig',
+    'crispy_forms',
+    'feed',
+    'search',
+
 ]
 
 MIDDLEWARE = [
@@ -116,13 +121,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'mystaticfiles'),
-                    os.path.join(BASE_DIR, 'follow_unfollow/static'),
-    ]
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [  
+Path(BASE_DIR, 'register_login_logout/static'), 
+Path(BASE_DIR, 'feed/static'),
+Path(BASE_DIR, 'mystaticfiles'),
+Path(BASE_DIR, 'follow_unfollow/static'),
+]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = Path(BASE_DIR, 'media')
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/' 
