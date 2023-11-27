@@ -1,0 +1,37 @@
+<!-- your_friends.html -->
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Your Friends{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <h2>Your Friends</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <a href="{% url 'friends' %}">friends</a>
+            </div>
+        </div>
+        <div class="friends-container">
+            {% for friend in your_friends_list %}
+                <div class="friend-tile">
+                    <a href="{% url 'user_profile' username=friend.friend.username %}">
+                        <h3>{{ friend.friend.username }}</h3>
+                    </a>
+                    <!-- Add the unfollow button here -->
+                    <form method="post" action="{% url 'unfollow_user' user_id=friend.friend.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary friends-button">Unfollow</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+{% endblock %}
