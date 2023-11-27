@@ -1,5 +1,14 @@
+:root {
+  --background-color: #e8e5e5;
+  --primary-color: #0D6EFD;
+}
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
 body{
-    background-color: #F0F2F5;
+    background-color: var(--background-color);
 }
 .post_container{
     border: 1px solid #FDFDFD;
@@ -18,6 +27,18 @@ body{
     align-items: center;
     background-color: rgb(210, 210, 247);
 }
+.user-controls{
+    display: flex;
+    justify-content: space-between;
+}
+.user_picture{
+    width: 50px;
+    height: 50px;
+}
+.profile_picture_search{
+    width: 50px;
+    height: 50px;
+}
 .user_detail{
     display: flex;
     align-items: center;
@@ -25,5 +46,88 @@ body{
 .like_row{
     display: flex;
     justify-content: space-around;
-    font-weight: bold;
+}
+.btn.postButton{
+    font-weight: bold !important;
+}
+.btn.postButton:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar a{
+    text-decoration: none;
+    margin: 0px 1px;
+}
+.navbar h3{
+    padding: 10px 30px;
+}
+.navbar h3:hover{
+    background-color: var(--background-color);;
+    border-radius: 10px;
+}
+.search{
+    padding: 0 !important;
+    height: 100%;
+}
+.search-icon {
+    position: absolute;
+    top: 50%; /* Adjust as needed */
+    right: 8px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.logo{
+    width: 150px;
+}
+.active {
+    background-color: var(--background-color);;
+    border-radius: 10px;
+    text-decoration: underline !important;
+}
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
+.custom-file-upload i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+.upload-text {
+    font-size: 1.2rem;
+    color: #3498db;
+    text-decoration: none; 
+}
+
+.custom-file-upload:hover {
+    color: var(--primary-color);
+}
+
+.custom-file-upload:hover i {
+    color: var(--primary-color); 
+}
+.custom-file-upload:hover .upload-text {
+    color: var(--primary-color); 
+}
+.btn-edit:hover {
+    background-color: #ffca2a; /* Lighter warning color on hover */
+    color: #212529; /* Bootstrap dark text color */
+    border-color: #ffca2a; /* Lighter warning color on hover */
+}
+
+/* Hover effect for delete button */
+.btn-delete:hover {
+    background-color: #e44d5a; /* Lighter danger color on hover */
+    color: #fff; /* White text color */
+    border-color: #e44d5a; /* Lighter danger color on hover */
 }
