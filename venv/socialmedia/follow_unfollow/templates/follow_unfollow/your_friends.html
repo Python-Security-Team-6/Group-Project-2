@@ -21,7 +21,9 @@
         <div class="friends-container">
             {% for friend in your_friends_list %}
                 <div class="friend-tile">
-                    <h3>{{ friend.friend.username }}</h3>
+                    <a href="{% url 'user_profile' username=friend.friend.username %}">
+                        <h3>{{ friend.friend.username }}</h3>
+                    </a>
                     <!-- Add the unfollow button here -->
                     <form method="post" action="{% url 'unfollow_user' user_id=friend.friend.id %}">
                         {% csrf_token %}

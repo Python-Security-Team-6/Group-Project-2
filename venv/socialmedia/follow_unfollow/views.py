@@ -69,3 +69,7 @@ def your_friends_view(request):
     your_friends_list = Friend.objects.filter(user=request.user)
     return render(request, 'your_friends.html', {'your_friends_list': your_friends_list})
 
+def user_profile_view(request, username):
+    user = User.objects.get(username=username)
+    # Your logic to render the user profile page
+    return render(request, 'user_profile.html', {'user': user})
