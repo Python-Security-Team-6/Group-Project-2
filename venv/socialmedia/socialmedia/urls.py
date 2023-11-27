@@ -13,10 +13,12 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='register_login_logout/logout.html'), name='logout'),
     path('', include('register_login_logout.urls')),
     path('feed/', include('feed.urls')),
-    path('search/', include('search.urls'))
+    path('search/', include('search.urls')),
+    path('', include('follow_unfollow.urls')),
+
 ]
 
-# sor- Serve media files during development
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
