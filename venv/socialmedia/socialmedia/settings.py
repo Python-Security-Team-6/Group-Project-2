@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'posts',
+    'chat',
+    'notifications',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
