@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'follow_unfollow',
     'register_login_logout.apps.RegisterLoginLogoutConfig',
-    'crispy_forms',
     'feed',
     'search',
 ]

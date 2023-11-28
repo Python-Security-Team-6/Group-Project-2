@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Post, Like, Comment
+from .models import Like, Comment
+from feed.models import Post
 
 @login_required
 def create_post(request):
