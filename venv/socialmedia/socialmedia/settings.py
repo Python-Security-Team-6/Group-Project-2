@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'follow_unfollow','register_login_logout.apps.RegisterLoginLogoutConfig',
+    'follow_unfollow',
+    'register_login_logout.apps.RegisterLoginLogoutConfig',
     'crispy_forms',
     'feed',
     'search',
-
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,10 @@ ROOT_URLCONF = 'socialmedia.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'follow_unfollow'/'templates'/'follow_unfollow',],
+        'DIRS': [
+            BASE_DIR/'follow_unfollow'/'templates'/'follow_unfollow',
+            BASE_DIR/'register_login_logout'/'templates'/'register_login_logout'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
