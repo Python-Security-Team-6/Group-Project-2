@@ -143,3 +143,20 @@ body{
             padding: 10px;
             cursor: pointer;
         }
+.comment-input i {
+    font-size: 24px;
+    color: #007bff; /* You can change the color as needed */
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* Style for the comment input field */
+.comment-input input {
+    width: calc(100% - 30px); /* Adjust the width as needed */
+    display: inline-block;
+}
+
+/* Style for the posted comments */
+.posted-comments p {
+    margin: 5px 0;
+}

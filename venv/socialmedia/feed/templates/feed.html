@@ -1,124 +1,210 @@
 {% extends 'feed/base.html' %} 
 {% block content %}
 <div class="container w-50">
-	<form
-		method="post"
-		action="{% url 'feed' %}"
-		enctype="multipart/form-data"
-		class="form bg-light rounded p-3"
-	>
-		{% csrf_token %}
- 		<!-- User Information -->
-		<div class="user_detail mb-3 p-2 rounded ">
-			{% if user.userprofile and user.userprofile.profile_picture %}
-			<img
-				src="{{ post.user.userprofile.profile_picture.url }}"
-				alt="{{ post.user.username }}'s Profile Picture"
-			/>
-			{% else %}
-			<div class="profile_picture user_picture"><i class="fa-regular fa-user h5"></i></div>
-			{% endif %}			
-			<h4 class="username mx-2">{{ user.username }}</h4>
-		</div>
+    <form
+        method="post"
+        action="{% url 'feed' %}"
+        enctype="multipart/form-data"
+        class="form bg-light rounded p-3"
+    >
+        {% csrf_token %}
+        <!-- User Information -->
+        <div class="user_detail mb-3 p-2 rounded ">
+            {% if user.userprofile and user.userprofile.profile_picture %}
+            <img
+                src="{{ post.user.userprofile.profile_picture.url }}"
+                alt="{{ post.user.username }}'s Profile Picture"
+            />
+            {% else %}
+            <div class="profile_picture user_picture"><i class="fa-regular fa-user h5"></i></div>
+            {% endif %}            
+            <h4 class="username mx-2">{{ user.username }}</h4>
+        </div>
 
-		<!-- Text Content -->
-		<div class="mb-3">
-    <textarea
-        class="form-control my-3"
-        id="id_content"
-        name="content"
-        rows="5"
-        placeholder="What's on your mind, {{ user.username }}?"
-        required
-    ></textarea>
+        <!-- Text Content -->
+        <div class="mb-3">
+            <textarea
+                class="form-control my-3"
+                id="id_content"
+                name="content"
+                rows="5"
+                placeholder="What's on your mind, {{ user.username }}?"
+                required
+            ></textarea>
 
-    <!-- Hidden File Input -->
-    <input
-        type="file"
-        id="id_image"
-        name="image"
-        style="display: none"
-        onchange="displayFileName(this)"
-    />
+            <!-- Hidden File Input -->
+            <input
+                type="file"
+                id="id_image"
+                name="image"
+                style="display: none"
+                onchange="displayFileName(this)"
+            />
 
-    <!-- Custom Icon/Button for File Upload -->
-    <label for="id_image" class="custom-file-upload border">
-        <i class="fa-regular fa-image display-6"></i>
-        <span id="upload-text">Select a photo</span>
-    </label>
+            <!-- Custom Icon/Button for File Upload -->
+            <label for="id_image" class="custom-file-upload border">
+                <i class="fa-regular fa-image display-6"></i>
+                <span id="upload-text">Select a photo</span>
+            </label>
 
-    <!-- Display selected file name -->
-    <span id="file-name"></span>
-</div>
+            <!-- Display selected file name -->
+            <span id="file-name"></span>
+        </div>
 
-<script>
-    function displayFileName(input) {
-        var fileName = input.value.split('\\').pop();
-        document.getElementById('file-name').innerText = 'Selected Image: ' + fileName;
-        document.getElementById('upload-text').innerText = 'Change photo';
-    }
+        <script>
+            function displayFileName(input) {
+                var fileName = input.value.split('\\').pop();
+                document.getElementById('file-name').innerText = 'Selected Image: ' + fileName;
+                document.getElementById('upload-text').innerText = 'Change photo';
+            }
+        </script>
+
+        <button type="submit" class="btn btn-primary w-100">Post</button>
+    </form>
+
+    {% for post in posts %}
+        <div class="post_container rounded my-3 bg-light">
+            <div class="user-controls">
+                <div class="user_detail px-3 pt-3">
+                    {% if post.user.userprofile and post.user.userprofile.profile_picture %}
+                    <img
+                        src="{{ post.user.userprofile.profile_picture.url }}"
+                        alt="{{ post.user.username }}'s Profile Picture"
+                    />
+                    {% else %}
+                    <div class="profile_picture"><i class="fa-regular fa-user h2"></i></div>
+                    {% endif %}
+                    <div class="mx-3">
+                        <p class="m-0"><b>{{ post.user.username }}</b></p>
+                        <small>{{ post.created_at|timesince }} ago</small>
+                    </div>
+                </div>
+                <!-- Edit and delete -->
+                {% if post.user == user %}
+                    <div class="edit-delete-buttons m-3" >
+                        <a href="{% url 'edit_post' post.post_id %}" class="btn btn-sm btn-edit" title="Edit Post"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{% url 'delete_post' post.post_id %}" class="btn btn-sm btn-delete" title="Delete Post"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <p style="white-space: pre-line" class="p-3">{{ post.content }}</p>
+            {% if post.image %}
+            <img
+                src="{{ post.image.url }}"
+                alt="{{ post.title }} Image should have been here but it is not so just read the text."
+                class="post_images"
+            />
+            {% endif %}
+
+            <div class="p-3">
+                <p class="like-count">
+                    <i class="fa-regular fa-thumbs-up"></i> <b>{{ post.like_set.count }}</b> people liked this post
+                </p>
+                <hr />
+                <div class="like_row">
+                    <button class="btn postButton likeButton" data-post-id="{{ post.post_id }}">
+                        <i class="fas fa-thumbs-up"></i> Like
+                    </button>
+                    <button class="btn postButton commentButton" data-post-id="{{ post.post_id }}">
+                        <i class="fa-solid fa-comment"></i> Comment
+                    </button>
+                    <button class="btn postButton shareButton" data-post-id="{{ post.post_id }}">
+                        <i class="fa-solid fa-share"></i> Share
+                    </button>
+                </div>
+
+                <!-- Comment input field with arrow icon -->
+                <div class="comment-input" style="display: none;">
+                    <input type="text" class="form-control" placeholder="Write a comment..." data-post-id="{{ post.post_id }}">
+                    <i class="fas fa-arrow-alt-circle-right submitCommentButton" data-post-id="{{ post.post_id }}"></i>
+                </div>
+
+                <!-- Posted comments -->
+                <div class="posted-comments">
+                    {% for comment in post.comment_set.all %}
+                        <p><b>{{ comment.user.username }}</b>: {{ comment.content }}</p>
+                    {% endfor %}
+                </div>
+                <hr />
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+    const csrf_token = "{{ csrf_token }}";
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.likeButton').forEach(button => {
+            button.addEventListener('click', () => handleAction(button, 'like'));
+        });
+
+        document.querySelectorAll('.commentButton').forEach(button => {
+            button.addEventListener('click', () => handleCommentInput(button));
+        });
+
+        document.querySelectorAll('.shareButton').forEach(button => {
+            button.addEventListener('click', () => handleAction(button, 'share'));
+        });
+
+        document.querySelectorAll('.submitCommentButton').forEach(button => {
+            button.addEventListener('click', () => handleCommentSubmit(button));
+        });
+
+        function handleAction(button, action) {
+            const postId = button.dataset.postId;
+
+            fetch(`/${action}_post/${postId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (action === 'like') {
+                        const likeCountElement = button.closest('.post_container').querySelector('.like-count');
+                        likeCountElement.innerHTML = `<i class="fa-regular fa-thumbs-up"></i> <b>${data.likes}</b> people liked this post`;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function handleCommentInput(button) {
+            const postId = button.dataset.postId;
+            const commentInput = button.closest('.post_container').querySelector('.comment-input');
+            commentInput.style.display = 'block';
+            const inputField = commentInput.querySelector('input');
+            inputField.focus();
+        }
+
+        function handleCommentSubmit(button) {
+			const postId = button.dataset.postId;
+			const commentInput = button.closest('.post_container').querySelector('.comment-input');
+			const inputField = commentInput.querySelector('input');
+
+			const content = inputField.value.trim();
+			if (content !== '') {
+				fetch(`/comment_post/${postId}/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						'X-CSRFToken': csrf_token,
+					},
+					body: `content=${encodeURIComponent(content)}`,
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Bad Request');
+					}
+					return response.json();
+				})
+				.then(data => {
+					const postedComments = button.closest('.post_container').querySelector('.posted-comments');
+					postedComments.innerHTML += `<p><b>${data.username}</b>: ${data.content}</p>`;
+					inputField.value = '';
+					commentInput.style.display = 'none';
+				})
+				.catch(error => console.error('Error:', error));
+			}
+		}
+
+    });
 </script>
 
-
-		<button type="submit" class="btn btn-primary w-100">Post</button>
-	</form>
-
-	{% for post in posts %}
-	<div class="post_container rounded my-3 bg-light">
-		<div class="user-controls">
-			<div class="user_detail px-3 pt-3">
-				{% if post.user.userprofile and post.user.userprofile.profile_picture %}
-				<img
-					src="{{ post.user.userprofile.profile_picture.url }}"
-					alt="{{ post.user.username }}'s Profile Picture"
-				/>
-				{% else %}
-				<div class="profile_picture"><i class="fa-regular fa-user h2"></i></div>
-				{% endif %}
-				<div class="mx-3">
-					<p class="m-0"><b>{{ post.user.username }}</b></p>
-					<small>{{ post.created_at|timesince }} ago</small>
-				</div>
-
-			</div>
-			<!-- Edit and delete -->
-			{% if post.user == user %}
-				<div class="edit-delete-buttons m-3" >
-					<a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-edit" title="Edit Post"><i class="fa-solid fa-pen-to-square"></i></a>
-					<a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-delete" title="Delete Post"><i class="fa-solid fa-trash"></i></a>
-				</div>
-			{% endif %}
-		</div>
-
-
-		<p style="white-space: pre-line" class="p-3">{{ post.content }}</p>
-		{% if post.image %}
-		<img
-			src="{{ post.image.url }}"
-			alt="{{ post.title }} Image should have been here but it is not so just read the text."
-			class="post_images"
-		/>
-		{% endif %}
-
-		<div class="p-3">
-			<p>
-				<i class="fa-regular fa-thumbs-up"></i> <b>34</b> people liked this post
-			</p>
-			<hr />
-			<div class="like_row">
-				<button id="likeButton" class="btn postButton">
-					<i class="fas fa-thumbs-up"></i> Like
-				</button>
-				<button id="commentButton" class="btn postButton">
-					<i class="fa-solid fa-comment"></i> Comment
-				</button>
-				<button id="shareButton" class="btn postButton">
-					<i class="fa-solid fa-share"></i> Share
-				</button>
-			</div>
-			<hr />
-		</div>
-	</div>
-	{% endfor %}
 </div>
 {% endblock %}
