@@ -8,7 +8,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    #path('posts/', include('posts.urls')),
     path('chat/', include('chat.urls')),
     path('notifications/', include('notifications.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='register_login_logout/login.html'), name='login'),

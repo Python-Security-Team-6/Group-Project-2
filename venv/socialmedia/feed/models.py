@@ -26,13 +26,3 @@ class Comment(models.Model):
 class Share(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    
-"""
-def get_like_model():
-    from posts.models import Like
-    return Like
-
-def get_comment_model():
-    from posts.models import Comment
-    return Comment
-"""

@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Like, Comment, Share
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.cache import never_cache
+
 
 @login_required
 def feed(request):
@@ -71,6 +73,17 @@ def comment_post(request, post_id):
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 
+@never_cache
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Delete the comment
+    comment.delete()
+
+    # Send a response with status 204 (No Content)
+    return HttpResponse(status=204)
+
+
 
 @login_required
 def share_post(request, post_id):
@@ -80,48 +93,3 @@ def share_post(request, post_id):
     post.save()
 
     return JsonResponse({'shares': post.shared_count})
-"""
-@login_required
-def get_comments(request):
-    post_id = request.GET.get('post_id')
-    post = get_object_or_404(Post, post_id=post_id)
-    comments = post.comments.all()
-    context = {'comments': comments}
-    return render(request, 'feed/comments.html', context)
-
-@login_required
-def like_post(request, post_id):
-    post = get_object_or_404(Post, post_id=post_id)
-    
-    # Check if the user has already liked the post
-    if request.user in post.likes.all():
-        # User has already liked, so unlike
-        post.likes.remove(request.user)
-        liked = False
-    else:
-        # User hasn't liked, so like
-        Like.objects.create(user=request.user, post=post)
-        liked = True
-    
-    # Update the likes count
-    likes_count = post.likes.count()
-
-    # Return JSON response
-    return JsonResponse({'liked': liked, 'likes_count': likes_count})
-
-@login_required
-def add_comment(request, post_id):
-    post = get_object_or_404(Post, post_id=post_id)
-    text = request.POST.get('comment_text')
-    if text:
-        Comment.objects.create(user=request.user, post=post, text=text)
-    return redirect('feed')
-
-@login_required
-def share_post(request, post_id):
-    post = get_object_or_404(Post, post_id=post_id)
-    post.shared_count += 1
-    post.save()
-    return redirect('feed')
-
-"""

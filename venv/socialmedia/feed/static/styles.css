@@ -132,31 +132,34 @@ body{
     border-color: #e44d5a; /* Lighter danger color on hover */
 }
  #return-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-        }
-.comment-input i {
-    font-size: 24px;
-    color: #007bff; /* You can change the color as needed */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
     cursor: pointer;
-    margin-left: 5px;
 }
 
-/* Style for the comment input field */
+/* styles.css */
+
+.comment-input {
+    display: none;
+    position: relative;
+}
+
 .comment-input input {
-    width: calc(100% - 30px); /* Adjust the width as needed */
-    display: inline-block;
+    width: 100%;
+    padding-right: 40px; /* Adjust the padding to ensure space for the icon */
 }
 
-/* Style for the posted comments */
-.posted-comments p {
-    margin: 5px 0;
+.comment-input i {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
 }
