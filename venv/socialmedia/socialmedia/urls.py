@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('feed.urls')),
     path('search/', include('search.urls')),
     path('', include('follow_unfollow.urls')),
+    path('', include('userprofile.urls')),
 
 ]
 
