@@ -1,0 +1,60 @@
+.userprofile-container {
+    background-color:white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.userprofile-pic {
+    width: 150px !important; /* Set your desired width */
+    height: 150px !important; /* Set your desired height */
+    max-width: 100% !important; /* Ensure the image doesn't exceed the specified width */
+    max-height: 100% !important; /* Ensure the image doesn't exceed the specified height */
+    object-fit: cover !important; /* Maintain aspect ratio and cover the container */
+    border-radius: 50% !important; /* Make it circular */
+}
+
+
+.empty-profile-pic {
+    width: 150px; /* Set your desired width for the empty container */
+    height: 150px; /* Set your desired height for the empty container */
+    background-color: #ddd; /* Set a background color for the empty container */
+    border-radius: 50%; /* Make it circular */
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.profile-info h2 {
+    margin: 0;
+    color: #333;
+}
+
+.about-me {
+    margin-top: 5px;
+    color: #555;
+}
+
+.recent-activities {
+    margin-top: 20px;
+}
+.cover-pic {
+    width: 100%;
+    height: 300px; /* Set the desired height of the container */
+    object-fit: cover; /* Ensure that the image covers the entire container while maintaining its aspect ratio */
+    object-position: center top; /* Optional: Adjust the position of the image within the container (centered horizontally and aligned to the top) */
+    border-bottom: 1px solid #ddd; /* Optional: add a border at the bottom of the cover picture */
+}
+
+
+@media (max-width: 768px) {
+    /* Add responsive styles here */
+}

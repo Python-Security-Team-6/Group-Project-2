@@ -22,6 +22,12 @@
             {% for friend in your_friends_list %}
                 <div class="friend-tile">
                     <a href="{% url 'user_profile' username=friend.friend.username %}">
+                        {% if friend.friend.userprofile.profile_pic %}
+                            <img src="{{ friend.friend.userprofile.profile_pic.url }}" alt="{{ friend.friend.username }}'s Profile Picture" class="profile-pic">
+                        {% else %}
+                            <!-- Provide a default image or handle the case where the profile pic is missing -->
+                            <img src="{% static 'profile_pics/default_profile_pic.jpg' %}" alt="{{ friend.friend.username }}'s Profile Picture" class="profile-pic">
+                        {% endif %}
                         <h3>{{ friend.friend.username }}</h3>
                     </a>
                     <!-- Add the unfollow button here -->

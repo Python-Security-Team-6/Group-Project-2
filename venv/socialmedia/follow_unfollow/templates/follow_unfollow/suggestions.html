@@ -28,7 +28,7 @@
                         <img src="{{ suggestion.profile_pic.url }}" alt="{{ suggestion.user.username }}'s Profile Picture" class="profile-pic">
                         <h3>{{ suggestion.user.username }}</h3>
                     </a>
-                    <!-- Add the follow button here -->
+                    
                     <form method="post" action="{% url 'follow_user' user_id=suggestion.user.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary friends-button">Follow</button>

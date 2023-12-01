@@ -1,11 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from feed.models import Post
 
-class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    shared_count = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
