@@ -9,7 +9,6 @@ urlpatterns = [
     path('follow-user/<int:user_id>/', follow_user, name='follow_user'),
     path('unfollow-user/<int:user_id>/', unfollow_user, name='unfollow_user'),
     path('user_profile/<str:username>/', user_profile_view, name='user_profile'),
-    
     ]
     
 

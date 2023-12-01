@@ -23,6 +23,11 @@ def feed(request):
 
     return render(request, 'feed.html', {'posts': posts, 'form': form})
 
+@login_required
+def user_posts(request):
+    user = request.user
+    user_posts = Post.objects.filter(user=user).order_by('-created_at')
+    return render(request, 'user_posts.html', {'user_posts': user_posts})
 
 @login_required
 def edit_post(request, post_id):

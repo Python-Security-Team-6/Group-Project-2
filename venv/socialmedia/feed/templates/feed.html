@@ -154,10 +154,10 @@
 			</div>
 
 			<!-- Posted comments -->
-			<div class="posted-comments bg-secondary-subtle p-2 rounded mt-3">
+			<div class="posted-comments  mt-3">
 				{% for comment in post.comment_set.all %}
 				<div
-					class="d-flex justify-content-between border-bottom border-light m"
+					class="d-flex justify-content-between border-bottom border-light bg-secondary-subtle p-2 rounded m-2"
 				>
 					<p class="">
 						<b>{{ comment.user.username }}</b>: {{ comment.content }}
