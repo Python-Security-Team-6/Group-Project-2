@@ -1,16 +1,16 @@
 <div>
     <p>{{ post.content }}</p>
     <p>Likes: {{ post.like_set.count }}</p>
-    <form action="{% url 'like_post' post.id %}" method="post">
+    <form action="{% url 'like_post' post.post_id %}" method="post">
         {% csrf_token %}
         <button type="submit">Like</button>
     </form>
-    <form method="post" action="{% url 'share_post' post.id %}">
+    <form method="post" action="{% url 'share_post' post.post_id %}">
         {% csrf_token %}
         <button type="submit">Share</button>
     </form>
     <p>Shared {{ post.shared_count }} times</p>
-    <form action="{% url 'add_comment' post.id %}" method="post">
+    <form action="{% url 'add_comment' post.post_id %}" method="post">
         {% csrf_token %}
         <input type="text" name="comment_text" placeholder="Add a comment">
         <button type="submit">Comment</button>

@@ -1,7 +1,8 @@
-{% extends 'base.html' %} 
-{% block content %}
+{% extends 'feed/base.html' %} {% block content %}
 <div class="d-flex flex-column justify-content-center align-items-center my-5">
-	<div class="border shadow w-50 p-3 d-flex flex-column justify-content-center align-items-center rounded bg-light">
+	<div
+		class="border shadow w-50 p-3 d-flex flex-column justify-content-center align-items-center rounded bg-light"
+	>
 		<h2>Edit Post</h2>
 		<form method="post" enctype="multipart/form-data" class="my-4 w-75">
 			{% csrf_token %}
@@ -11,7 +12,9 @@
 					name="content"
 					rows="5"
 					placeholder="Edit your post, {{ user.username }}?"
-				>{{ form.content.value }}</textarea>
+				>
+{{ form.content.value }}</textarea
+				>
 
 				<!-- Hidden File Input -->
 				<input
@@ -46,9 +49,9 @@
 			</script>
 
 			<button
-				type="submit"
+				type="button"
 				class="btn btn-secondary mt-3"
-				onclick="history.back()"
+				onclick="cancelEdit()"
 			>
 				Cancel
 			</button>
@@ -56,4 +59,10 @@
 		</form>
 	</div>
 </div>
+<script>
+	function cancelEdit() {
+		// Use JavaScript to navigate back without form submission
+		window.history.back();
+	}
+</script>
 {% endblock %}

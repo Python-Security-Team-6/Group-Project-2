@@ -1,10 +1,11 @@
 <!-- user_profile.html -->
 
-{% extends 'userprofile/base.html' %}
+{% extends 'feed/base.html' %}
 
 {% block title %}User Profile - {{ user.username }}{% endblock %}
 
 {% block content %}
+<div class="container">
     <div class="userprofile-container">
         <div class="image-container">
             
@@ -39,35 +40,36 @@
             {% endif %}
         </div>
     </div>
-
     <!-- Navigation Buttons -->
     <div class="horizontal-buttons">
         <div class="btn-group" role="group" aria-label="User Navigation">
             <!-- Add unique IDs to each link for identification -->
-            <a href="#" id="posts-link" class="btn btn-default">Posts</a>
-            <a href="#" id="friends-link" class="btn btn-default">Friends</a>
-            <a href="#" id="feed-link" class="btn btn-default">Feed</a>
+            <a href="{% url 'user_posts' %}" id="posts-link" class="btn btn-default">Posts</a>
+            <a href="{% url 'your_friends' %}" id="friends-link" class="btn btn-default">Friends</a>
+            <a href="{% url 'feed' %}" id="feed-link" class="btn btn-default">Feed</a>
             <a href="#" id="chat-link" class="btn btn-default">Chat</a>
         </div>
     </div>
 
     <!-- Container to display loaded content -->
-    <div id="content-container"></div>
-
+    <div id="content-container">
+    </div>
+    
+</div>
     <!-- JavaScript to handle link clicks and load content -->
     <script>
         $(document).ready(function() {
             // Event handlers for link clicks
             $('#posts-link').click(function(e) {
                 e.preventDefault();
-                loadContent("{% url 'testingposts' %}");
+                loadContent("{% url 'user_posts' %}");
             });
-
+ 
             $('#friends-link').click(function(e) {
                 e.preventDefault();
                 loadContent("{% url 'your_friends' %}");
             });
-
+ 
             $('#feed-link').click(function(e) {
                 e.preventDefault();
                 loadContent("{% url 'feed' %}");

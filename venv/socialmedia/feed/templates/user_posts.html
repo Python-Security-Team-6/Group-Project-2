@@ -1,0 +1,329 @@
+{% extends 'feed/base.html' %}
+{% block content %}
+<div class="container w-50">
+    <h2>Your Posts</h2>
+    {% for post in user_posts %}
+        <div class="post_container rounded my-3 bg-light">
+		<div class="user-controls">
+			<div class="user_detail px-3 pt-3">
+				{% if post.user.userprofile and post.user.userprofile.profile_picture %}
+				<img
+					src="{{ post.user.userprofile.profile_picture.url }}"
+					alt="{{ post.user.username }}'s Profile Picture"
+				/>
+				{% else %}
+				<div class="profile_picture"><i class="fa-regular fa-user h2"></i></div>
+				{% endif %}
+				<div class="mx-3">
+					<p class="m-0"><b>{{ post.user.username }}</b></p>
+					<small>{{ post.created_at|timesince }} ago</small>
+				</div>
+			</div>
+			<!-- Edit and delete -->
+			{% if post.user == user %}
+			<div class="edit-delete-buttons m-3">
+				<a
+					href="{% url 'edit_post' post.post_id %}"
+					class="btn btn-sm btn-edit"
+					title="Edit Post"
+					><i class="fa-solid fa-pen-to-square"></i
+				></a>
+				<a
+					href="{% url 'delete_post' post.post_id %}"
+					class="btn btn-sm btn-delete"
+					title="Delete Post"
+					><i class="fa-solid fa-trash"></i
+				></a>
+			</div>
+			{% endif %}
+		</div>
+
+		<p style="white-space: pre-line" class="p-3">{{ post.content }}</p>
+		{% if post.image %}
+		<img
+			src="{{ post.image.url }}"
+			alt="{{ post.title }} Image should have been here but it is not so just read the text."
+			class="post_images"
+		/>
+		{% endif %}
+
+		<div class="p-3">
+			<p class="like-count">
+				<i class="fa-regular fa-thumbs-up"></i>
+				<b>{{ post.like_set.count }}</b> people liked this post
+			</p>
+			<hr />
+			<div class="like_row">
+				<button
+					class="btn postButton likeButton"
+					data-post-id="{{ post.post_id }}"
+				>
+					<i class="fas fa-thumbs-up"></i>
+					<span class="like-text">Like</span>
+				</button>
+				<button
+					class="btn postButton commentButton"
+					data-post-id="{{ post.post_id }}"
+				>
+					<i class="fa-solid fa-comment"></i> Comment
+				</button>
+				<button
+					class="btn postButton shareButton"
+					data-post-id="{{ post.post_id }}"
+				>
+					<i class="fa-solid fa-share"></i> Share
+				</button>
+			</div>
+
+			<!-- Comment input field with arrow icon -->
+			<div class="comment-input" style="display: none">
+				<input
+					type="comment"
+					class="form-control"
+					placeholder="Write a comment..."
+					data-post-id="{{ post.post_id }}"
+					onkeypress="submitOnEnter(event)"
+				/>
+				<i
+					class="fas fa-arrow-alt-circle-right submitCommentButton"
+					data-post-id="{{ post.post_id }}"
+					onclick="reloadPage()"
+				></i>
+			</div>
+
+			<!-- Posted comments -->
+			<div class="posted-comments bg-secondary-subtle p-2 rounded mt-3">
+				{% for comment in post.comment_set.all %}
+				<div
+					class="d-flex justify-content-between border-bottom border-light m"
+				>
+					<p class="">
+						<b>{{ comment.user.username }}</b>: {{ comment.content }}
+					</p>
+					{% if comment.user == user or post.user == user%}
+					<a
+						href="{% url 'delete_comment' comment.id %}"
+						class="btn btn-sm btn-delete"
+						title="Delete Comment"
+						type="button"
+						onclick="deleteAndReload('{{ comment.id }}')"
+					>
+						<i class="fa-solid fa-trash"></i>
+					</a>
+
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+    {% endfor %}
+</div>
+
+<script>
+    // Get the CSRF token from the Django template
+    const csrf_token = "{{ csrf_token }}";
+
+    // Wait for the DOM to be fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Handle like button clicks
+        document.querySelectorAll(".likeButton").forEach((button) => {
+            button.addEventListener("click", () => handleAction(button, "like"));
+        });
+
+        // Handle comment button clicks
+        document.querySelectorAll(".commentButton").forEach((button) => {
+            button.addEventListener("click", () => handleCommentInput(button));
+        });
+
+        // Handle share button clicks
+        document.querySelectorAll(".shareButton").forEach((button) => {
+            button.addEventListener("click", () => handleAction(button, "share"));
+        });
+
+        // Handle comment submission
+        document.querySelectorAll(".submitCommentButton").forEach((button) => {
+            button.addEventListener("click", () => handleCommentSubmit(button));
+        });
+
+        // Function to handle like, share, and unlike actions
+        function handleAction(button, action) {
+            const postId = button.dataset.postId;
+            const likeText = button.querySelector(".like-text");
+
+            // Make a fetch request to the server
+            fetch(`/${action}_post/${postId}/`)
+                .then((response) => response.json())
+                .then((data) => {
+                    // Process the response data
+                    console.log("Received data:", data);
+
+                    if (action === "like") {
+                        const likeCountElement = button
+                            .closest(".post_container")
+                            .querySelector(".like-count");
+                        likeCountElement.innerHTML = `<i class="fa-regular fa-thumbs-up"></i> <b>${data.likes}</b> people liked this post`;
+
+                        // Check if the 'is_liked' property is present in the data
+                        if ("is_liked" in data) {
+                            // Toggle between "Like" and "Liked" based on the current state
+                            likeText.innerText = data.is_liked ? "Liked" : "Like";
+
+                            // Change the color based on the current state
+                            button.style.color = data.is_liked ? "blue" : "black";
+                        } else {
+                            console.error(
+                                'Missing "is_liked" property in the received data.'
+                            );
+                        }
+                    }
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+
+        // Function to display the comment input field
+        function handleCommentInput(button) {
+            const postId = button.dataset.postId;
+            const commentInput = button
+                .closest(".post_container")
+                .querySelector(".comment-input");
+            commentInput.style.display = "block";
+            const inputField = commentInput.querySelector("input");
+            inputField.focus();
+        }
+
+        // Function to handle comment submission
+        function handleCommentSubmit(button) {
+            const postId = button.dataset.postId;
+            const commentInput = button
+                .closest(".post_container")
+                .querySelector(".comment-input");
+            const inputField = commentInput.querySelector("input");
+
+            // Get the content from the input field
+            const content = inputField.value.trim();
+
+            // Check if the content is not empty
+            if (content !== "") {
+                // Make a fetch request to submit the comment
+                fetch(`/comment_post/${postId}/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrf_token,
+                    },
+                    body: `content=${encodeURIComponent(content)}`,
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Bad Request");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        // Insert the new comment into the existing comments section
+                        const postedComments = button
+                            .closest(".post_container")
+                            .querySelector(".posted-comments");
+                        postedComments.innerHTML += `<p><b>${data.username}</b>: ${data.content}</p>`;
+
+                        // Clear the input field and hide the comment input section
+                        inputField.value = "";
+                        commentInput.style.display = "none";
+                    })
+                    .catch((error) =>
+                        console.error("Error posting comment:", error)
+                    );
+            }
+        }
+
+        // Event delegation for dynamically added elements
+        document.addEventListener("click", function (event) {
+            // Handle deleting comments
+            if (event.target.classList.contains("btn-delete")) {
+                event.preventDefault();
+
+                const deleteButton = event.target;
+                const commentId = deleteButton.dataset.commentId;
+
+                // Make a fetch request to delete the comment
+                fetch(`/delete_comment/${commentId}/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrf_token,
+                    },
+                })
+                    .then((response) => {
+                        if (response.status === 204) {
+                            // Reload the page after successful deletion
+                            location.reload();
+                        } else {
+                            // Handle other cases
+                            console.error(
+                                "Error deleting comment:",
+                                response.statusText
+                            );
+                        }
+                    })
+                    .then((data) => {
+                        // Remove the deleted comment from the DOM
+                        const deletedComment = deleteButton.closest("div");
+                        deletedComment.parentNode.removeChild(deletedComment);
+                    })
+                    .catch((error) =>
+                        console.error("Error deleting comment:", error)
+                    );
+            }
+        });
+
+        // Function to handle submitting comments on Enter key press
+        function submitOnEnter(event) {
+            if (event.key === "Enter") {
+                const submitButton = event.target
+                    .closest(".post_container")
+                    .querySelector(".submitCommentButton");
+                handleCommentSubmit(submitButton);
+                location.reload();
+            }
+        }
+
+        // Add event listeners to comment input fields for Enter key press
+        document
+            .querySelectorAll(".comment-input input")
+            .forEach((input) => {
+                input.addEventListener("keypress", submitOnEnter);
+            });
+    });
+</script>
+<script>
+    // Function to reload the page
+    function reloadPage() {
+        location.reload();
+    }
+</script>
+<script>
+    // Function to delete a comment and reload the page
+    function deleteAndReload(commentId) {
+        fetch(`/delete_comment/${commentId}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+            .then((response) => {
+                if (response.status === 204) {
+                    // Reload the page and clear the cache
+                    location.reload(true);
+                } else {
+                    // Handle other cases
+                    console.error("Error deleting comment:", response.statusText);
+                }
+            })
+            .catch((error) => console.error("Error deleting comment:", error));
+    }
+</script>
+
+{% endblock %}

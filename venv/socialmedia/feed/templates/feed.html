@@ -1,5 +1,4 @@
-{% extends 'base.html' %} 
-{% block content %}
+{% extends 'feed/base.html' %} {% block content %}
 <div class="container w-50">
 	<form
 		method="post"
@@ -8,57 +7,59 @@
 		class="form bg-light rounded p-3"
 	>
 		{% csrf_token %}
- 		<!-- User Information -->
-		<div class="user_detail mb-3 p-2 rounded ">
+		<!-- User Information -->
+		<div class="user_detail mb-3 p-2 rounded">
 			{% if user.userprofile and user.userprofile.profile_picture %}
 			<img
 				src="{{ post.user.userprofile.profile_picture.url }}"
 				alt="{{ post.user.username }}'s Profile Picture"
 			/>
 			{% else %}
-			<div class="profile_picture user_picture"><i class="fa-regular fa-user h5"></i></div>
-			{% endif %}			
+			<div class="profile_picture user_picture">
+				<i class="fa-regular fa-user h5"></i>
+			</div>
+			{% endif %}
 			<h4 class="username mx-2">{{ user.username }}</h4>
 		</div>
 
 		<!-- Text Content -->
 		<div class="mb-3">
-    <textarea
-        class="form-control my-3"
-        id="id_content"
-        name="content"
-        rows="5"
-        placeholder="What's on your mind, {{ user.username }}?"
-        required
-    ></textarea>
+			<textarea
+				class="form-control my-3"
+				id="id_content"
+				name="content"
+				rows="5"
+				placeholder="What's on your mind, {{ user.username }}?"
+				required
+			></textarea>
 
-    <!-- Hidden File Input -->
-    <input
-        type="file"
-        id="id_image"
-        name="image"
-        style="display: none"
-        onchange="displayFileName(this)"
-    />
+			<!-- Hidden File Input -->
+			<input
+				type="file"
+				id="id_image"
+				name="image"
+				style="display: none"
+				onchange="displayFileName(this)"
+			/>
 
-    <!-- Custom Icon/Button for File Upload -->
-    <label for="id_image" class="custom-file-upload border">
-        <i class="fa-regular fa-image display-6"></i>
-        <span id="upload-text">Select a photo</span>
-    </label>
+			<!-- Custom Icon/Button for File Upload -->
+			<label for="id_image" class="custom-file-upload border">
+				<i class="fa-regular fa-image display-6"></i>
+				<span id="upload-text">Select a photo</span>
+			</label>
 
-    <!-- Display selected file name -->
-    <span id="file-name"></span>
-</div>
+			<!-- Display selected file name -->
+			<span id="file-name"></span>
+		</div>
 
-<script>
-    function displayFileName(input) {
-        var fileName = input.value.split('\\').pop();
-        document.getElementById('file-name').innerText = 'Selected Image: ' + fileName;
-        document.getElementById('upload-text').innerText = 'Change photo';
-    }
-</script>
-
+		<script>
+			function displayFileName(input) {
+				var fileName = input.value.split("\\").pop();
+				document.getElementById("file-name").innerText =
+					"Selected Image: " + fileName;
+				document.getElementById("upload-text").innerText = "Change photo";
+			}
+		</script>
 
 		<button type="submit" class="btn btn-primary w-100">Post</button>
 	</form>
@@ -79,17 +80,25 @@
 					<p class="m-0"><b>{{ post.user.username }}</b></p>
 					<small>{{ post.created_at|timesince }} ago</small>
 				</div>
-
 			</div>
 			<!-- Edit and delete -->
 			{% if post.user == user %}
-				<div class="edit-delete-buttons m-3" >
-					<a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-edit" title="Edit Post"><i class="fa-solid fa-pen-to-square"></i></a>
-					<a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-delete" title="Delete Post"><i class="fa-solid fa-trash"></i></a>
-				</div>
+			<div class="edit-delete-buttons m-3">
+				<a
+					href="{% url 'edit_post' post.post_id %}"
+					class="btn btn-sm btn-edit"
+					title="Edit Post"
+					><i class="fa-solid fa-pen-to-square"></i
+				></a>
+				<a
+					href="{% url 'delete_post' post.post_id %}"
+					class="btn btn-sm btn-delete"
+					title="Delete Post"
+					><i class="fa-solid fa-trash"></i
+				></a>
+			</div>
 			{% endif %}
 		</div>
-
 
 		<p style="white-space: pre-line" class="p-3">{{ post.content }}</p>
 		{% if post.image %}
@@ -101,24 +110,247 @@
 		{% endif %}
 
 		<div class="p-3">
-			<p>
-				<i class="fa-regular fa-thumbs-up"></i> <b>34</b> people liked this post
+			<p class="like-count">
+				<i class="fa-regular fa-thumbs-up"></i>
+				<b>{{ post.like_set.count }}</b> people liked this post
 			</p>
 			<hr />
 			<div class="like_row">
-				<button id="likeButton" class="btn postButton">
-					<i class="fas fa-thumbs-up"></i> Like
+				<button
+					class="btn postButton likeButton"
+					data-post-id="{{ post.post_id }}"
+				>
+					<i class="fas fa-thumbs-up"></i>
+					<span class="like-text">Like</span>
 				</button>
-				<button id="commentButton" class="btn postButton">
+				<button
+					class="btn postButton commentButton"
+					data-post-id="{{ post.post_id }}"
+				>
 					<i class="fa-solid fa-comment"></i> Comment
 				</button>
-				<button id="shareButton" class="btn postButton">
+				<button
+					class="btn postButton shareButton"
+					data-post-id="{{ post.post_id }}"
+				>
 					<i class="fa-solid fa-share"></i> Share
 				</button>
 			</div>
-			<hr />
+
+			<!-- Comment input field with arrow icon -->
+			<div class="comment-input" style="display: none">
+				<input
+					type="comment"
+					class="form-control"
+					placeholder="Write a comment..."
+					data-post-id="{{ post.post_id }}"
+					onkeypress="submitOnEnter(event)"
+				/>
+				<i
+					class="fas fa-arrow-alt-circle-right submitCommentButton"
+					data-post-id="{{ post.post_id }}"
+					onclick="reloadPage()"
+				></i>
+			</div>
+
+			<!-- Posted comments -->
+			<div class="posted-comments  mt-3">
+				{% for comment in post.comment_set.all %}
+				<div
+					class="d-flex justify-content-between border-bottom border-light bg-secondary-subtle p-2 rounded m-2"
+				>
+					<p class="">
+						<b>{{ comment.user.username }}</b>: {{ comment.content }}
+					</p>
+					{% if comment.user == user or post.user == user%}
+					<a
+						href="{% url 'delete_comment' comment.id %}"
+						class="btn btn-sm btn-delete"
+						title="Delete Comment"
+						type="button"
+						onclick="deleteAndReload('{{ comment.id }}')"
+					>
+						<i class="fa-solid fa-trash"></i>
+					</a>
+
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 	{% endfor %}
+	<script>
+		const csrf_token = "{{ csrf_token }}";
+
+		document.addEventListener("DOMContentLoaded", function () {
+			document.querySelectorAll(".likeButton").forEach((button) => {
+				button.addEventListener("click", () => handleAction(button, "like"));
+			});
+			document.querySelectorAll(".commentButton").forEach((button) => {
+				button.addEventListener("click", () => handleCommentInput(button));
+			});
+
+			document.querySelectorAll(".shareButton").forEach((button) => {
+				button.addEventListener("click", () => handleAction(button, "share"));
+			});
+
+			document.querySelectorAll(".submitCommentButton").forEach((button) => {
+				button.addEventListener("click", () => handleCommentSubmit(button));
+			});
+
+			function handleAction(button, action) {
+				const postId = button.dataset.postId;
+				const likeText = button.querySelector(".like-text");
+
+				fetch(`/${action}_post/${postId}/`)
+					.then((response) => response.json())
+					.then((data) => {
+						console.log("Received data:", data); // Log the received data
+
+						if (action === "like") {
+							const likeCountElement = button
+								.closest(".post_container")
+								.querySelector(".like-count");
+							likeCountElement.innerHTML = `<i class="fa-regular fa-thumbs-up"></i> <b>${data.likes}</b> people liked this post`;
+
+							// Check if the 'is_liked' property is present in the data
+							if ("is_liked" in data) {
+								// Toggle between "Like" and "Liked" based on the current state
+								likeText.innerText = data.is_liked ? "Liked" : "Like";
+
+								// Change the color based on the current state
+								button.style.color = data.is_liked ? "blue" : "black";
+							} else {
+								console.error(
+									'Missing "is_liked" property in the received data.'
+								);
+							}
+						}
+					})
+					.catch((error) => console.error("Error:", error));
+			}
+
+			function handleCommentInput(button) {
+				const postId = button.dataset.postId;
+				const commentInput = button
+					.closest(".post_container")
+					.querySelector(".comment-input");
+				commentInput.style.display = "block";
+				const inputField = commentInput.querySelector("input");
+				inputField.focus();
+			}
+
+			function handleCommentSubmit(button) {
+				const postId = button.dataset.postId;
+				const commentInput = button
+					.closest(".post_container")
+					.querySelector(".comment-input");
+				const inputField = commentInput.querySelector("input");
+
+				const content = inputField.value.trim();
+				if (content !== "") {
+					fetch(`/comment_post/${postId}/`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded",
+							"X-CSRFToken": csrf_token,
+						},
+						body: `content=${encodeURIComponent(content)}`,
+					})
+						.then((response) => {
+							if (!response.ok) {
+								throw new Error("Bad Request");
+							}
+							return response.json();
+						})
+						.then((data) => {
+							// Insert the new comment into the existing comments section
+							const postedComments = button
+								.closest(".post_container")
+								.querySelector(".posted-comments");
+							postedComments.innerHTML += `<p><b>${data.username}</b>: ${data.content}</p>`;
+
+							inputField.value = "";
+							commentInput.style.display = "none";
+						})
+						.catch((error) => console.error("Error posting comment:", error));
+				}
+			}
+
+			// Event delegation for dynamically added elements
+			document.addEventListener("click", function (event) {
+				if (event.target.classList.contains("btn-delete")) {
+					event.preventDefault();
+
+					const deleteButton = event.target;
+					const commentId = deleteButton.dataset.commentId;
+
+					fetch(`/delete_comment/${commentId}/`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded",
+							"X-CSRFToken": csrf_token,
+						},
+					})
+						.then((response) => {
+							if (response.status === 204) {
+								// Reload the page after successful deletion
+								location.reload();
+							} else {
+								// Handle other cases
+								console.error("Error deleting comment:", response.statusText);
+							}
+						})
+						.then((data) => {
+							// Remove the deleted comment from the DOM
+							const deletedComment = deleteButton.closest("div");
+							deletedComment.parentNode.removeChild(deletedComment);
+						})
+						.catch((error) => console.error("Error deleting comment:", error));
+				}
+			});
+
+			function submitOnEnter(event) {
+				if (event.key === "Enter") {
+					const submitButton = event.target
+						.closest(".post_container")
+						.querySelector(".submitCommentButton");
+					handleCommentSubmit(submitButton);
+					location.reload();
+				}
+			}
+
+			document.querySelectorAll(".comment-input input").forEach((input) => {
+				input.addEventListener("keypress", submitOnEnter);
+			});
+		});
+	</script>
+	<script>
+		function reloadPage() {
+			location.reload();
+		}
+	</script>
+	<script>
+		function deleteAndReload(commentId) {
+			fetch(`/delete_comment/${commentId}/`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"X-CSRFToken": "{{ csrf_token }}",
+				},
+			})
+				.then((response) => {
+					if (response.status === 204) {
+						// Reload the page and clear the cache
+						location.reload(true);
+					} else {
+						// Handle other cases
+						console.error("Error deleting comment:", response.statusText);
+					}
+				})
+				.catch((error) => console.error("Error deleting comment:", error));
+		}
+	</script>
 </div>
 {% endblock %}
