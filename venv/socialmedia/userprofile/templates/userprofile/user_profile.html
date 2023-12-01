@@ -1,0 +1,97 @@
+<!-- user_profile.html -->
+
+{% extends 'userprofile/base.html' %}
+
+{% block title %}User Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+    <div class="userprofile-container">
+        <div class="image-container">
+            
+            {% if user.userprofile.cover_pic %}
+                <img src="{{ user.userprofile.cover_pic.url }}" alt="Cover Picture" class="cover-pic">
+            {% else %}
+                <div class="empty-cover-pic"></div>
+            {% endif %}
+        
+            
+            {% if user.userprofile.profile_pic %}
+                <img src="{{ user.userprofile.profile_pic.url }}" alt="{{ user.username }}'s Profile Picture" class="userprofile-pic">
+            {% else %}
+                <div class="empty-profile-pic"></div>
+            {% endif %}
+        </div>
+
+        <div class="profile-info">
+            
+            <h2>{{ user.username }}</h2>
+            <p class="about-me">About Me: {{ user.userprofile.about_me }}</p>
+
+            
+            {% if user.is_authenticated %}
+                {% if not user.userprofile.about_me %}
+                    <a href="{% url 'user_profile:about_me' username=user.username %}" class="btn btn-secondary">Add About Me</a>
+                {% else %}
+                    <a href="{% url 'user_profile:about_me' username=user.username %}" class="btn btn-secondary">Edit About Me</a>
+                {% endif %}
+            {% else %}
+                <button class="btn btn-secondary" disabled title="Log in to edit your About Me">Add/Edit About Me</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="horizontal-buttons">
+        <div class="btn-group" role="group" aria-label="User Navigation">
+            <!-- Add unique IDs to each link for identification -->
+            <a href="#" id="posts-link" class="btn btn-default">Posts</a>
+            <a href="#" id="friends-link" class="btn btn-default">Friends</a>
+            <a href="#" id="feed-link" class="btn btn-default">Feed</a>
+            <a href="#" id="chat-link" class="btn btn-default">Chat</a>
+        </div>
+    </div>
+
+    <!-- Container to display loaded content -->
+    <div id="content-container"></div>
+
+    <!-- JavaScript to handle link clicks and load content -->
+    <script>
+        $(document).ready(function() {
+            // Event handlers for link clicks
+            $('#posts-link').click(function(e) {
+                e.preventDefault();
+                loadContent("{% url 'testingposts' %}");
+            });
+
+            $('#friends-link').click(function(e) {
+                e.preventDefault();
+                loadContent("{% url 'your_friends' %}");
+            });
+
+            $('#feed-link').click(function(e) {
+                e.preventDefault();
+                loadContent("{% url 'feed' %}");
+            });
+
+            
+
+            // Function to load content using AJAX
+            function loadContent(url) {
+                $('#content-container').empty(); // Clear previous content
+                $('#content-container').load(url); // Load content from the specified URL
+            }
+        });
+    </script>
+
+
+    <script>
+        // JavaScript logic (for redirecting to 'About Me' page)
+        document.getElementById('about-me').addEventListener('click', function () {
+            {% if user.is_authenticated %}
+                window.location.href = "{% url 'user_profile:about_me' username=user.username %}";
+            {% else %}
+                alert('You need to be logged in to edit your About Me.');
+            {% endif %}
+        });
+    </script>
+{% endblock %}

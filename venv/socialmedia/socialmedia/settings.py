@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'follow_unfollow',
-    'register_login_logout.apps.RegisterLoginLogoutConfig',
-    'crispy_forms',
+    'register_login_logout.apps.RegisterLoginLogoutConfig',   
     'feed',
     'search',
+    'userprofile',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +64,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR/'follow_unfollow'/'templates'/'follow_unfollow',
+            BASE_DIR/'userprofile'/'templates'/'userprofile',
             BASE_DIR/'register_login_logout'/'templates'/'register_login_logout'
         ],
         'APP_DIRS': True,
