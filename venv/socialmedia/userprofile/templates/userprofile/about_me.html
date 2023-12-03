@@ -1,17 +1,13 @@
 <!--userprofile about_me.html -->
-{% extends 'userprofile/base.html' %}
-
-{% load static %}
-
-{% block title %} About Me{% endblock %}
-
-{% block content %}
-    <div class="container">
-        <h2>About Me</h2>
-        <form id="about-me-form" method="post" action="{% url 'user_profile:about_me' username=user.username %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" id="save-button">Save</button>
-        </form>
-    </div>
+{% extends 'feed/base.html' %} {% load static %} {% block title %} About
+Me{% endblock %} {% block content %}
+<div class="about-container">
+    <h2>About Me</h2>
+    <form id="about-me-form" method="post" action="{% url 'user_profile:about_me' username=user.username %}">
+        {% csrf_token %}
+        <label for="id_about_me">About Me:</label>
+        <textarea id="id_about_me" name="about_me" rows="4" placeholder="Tell us about yourself..." required>{{ form.about_me.value }}</textarea>
+        <button type="submit" id="save-button">Save</button>
+    </form>
+</div>
 {% endblock %}

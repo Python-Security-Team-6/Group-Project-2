@@ -6,7 +6,7 @@
 		{% for result in results %}
 			{% if result.user_result %}
 				<div class="bg-light rounded p-3">
-					<a href="#">
+					<a href="{% url 'user_profile' username=result.user_result.username %}">
 						<div class="user_detail">
 							{% if result.user_result.user.userprofile and result.user_result.user.userprofile.profile_picture %}
 								<img
