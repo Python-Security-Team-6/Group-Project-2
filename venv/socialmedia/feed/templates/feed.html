@@ -8,6 +8,7 @@
 	>
 		{% csrf_token %}
 		<!-- User Information -->
+		<a href="{% url 'user_profile' username=user.username %}" class="prof-link">
 		<div class="user_detail mb-3 p-2 rounded">
 			{% if user.userprofile and user.userprofile.profile_picture %}
 			<img
@@ -21,6 +22,7 @@
 			{% endif %}
 			<h4 class="username mx-2">{{ user.username }}</h4>
 		</div>
+			</a>
 
 		<!-- Text Content -->
 		<div class="mb-3">
@@ -67,6 +69,7 @@
 	{% for post in posts %}
 	<div class="post_container rounded my-3 bg-light">
 		<div class="user-controls">
+			<a href="{% url 'user_profile' username=post.user.username %}" class="prof-link">
 			<div class="user_detail px-3 pt-3">
 				{% if post.user.userprofile and post.user.userprofile.profile_picture %}
 				<img
@@ -74,13 +77,14 @@
 					alt="{{ post.user.username }}'s Profile Picture"
 				/>
 				{% else %}
-				<div class="profile_picture"><i class="fa-regular fa-user h2"></i></div>
+				<div class="profile_picture"><i class="fa-regular fa-user h4"></i></div>
 				{% endif %}
 				<div class="mx-3">
 					<p class="m-0"><b>{{ post.user.username }}</b></p>
 					<small>{{ post.created_at|timesince }} ago</small>
 				</div>
 			</div>
+			</a>
 			<!-- Edit and delete -->
 			{% if post.user == user %}
 			<div class="edit-delete-buttons m-3">
@@ -157,7 +161,7 @@
 			<div class="posted-comments  mt-3">
 				{% for comment in post.comment_set.all %}
 				<div
-					class="d-flex justify-content-between border-bottom border-light bg-secondary-subtle p-2 rounded m-2"
+					class="d-flex justify-content-between border-bottom border-light p-2 rounded m-2 comment-bar border"
 				>
 					<p class="">
 						<b>{{ comment.user.username }}</b>: {{ comment.content }}
@@ -351,6 +355,19 @@
 				})
 				.catch((error) => console.error("Error deleting comment:", error));
 		}
+
+		const likeButtons = document.querySelectorAll('.likeButton');
+
+likeButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const isLiked = button.classList.contains('liked');
+    if (isLiked) {
+      button.classList.remove('liked');
+    } else {
+      button.classList.add('liked');
+    }
+  });
+});
 	</script>
 </div>
 {% endblock %}

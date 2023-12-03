@@ -18,8 +18,8 @@ body{
     width: 100%;
 }
 .profile_picture{
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border: 1px solid #FDFDFD;
     border-radius: 50%;
     display: flex;
@@ -162,4 +162,25 @@ body{
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
+}
+.likeButton {
+  color: black;
+}
+
+.likeButton.liked {
+  color: var(--primary-color)
+}
+.comment-bar{
+    background-color: var(--background-color);
+}
+.username{
+    font-family: 'Nova Square', sans-serif !important;
+    font-family: 'Open Sans', sans-serif;
+}
+.prof-link{
+    text-decoration: none;
+    color: #333;
+}
+.prof-link:hover{
+    color: var(--primary-color)
 }
